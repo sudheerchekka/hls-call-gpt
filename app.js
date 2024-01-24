@@ -8,6 +8,7 @@ const { GptService } = require("./services/gpt-service");
 const { StreamService } = require("./services/stream-service");
 const { TranscriptionService } = require("./services/transcription-service");
 const { TextToSpeechService } = require("./services/tts-service");
+const { AirtableService } = require("./services/airtable-service");
 
 const app = express();
 ExpressWs(app);
@@ -19,6 +20,7 @@ let confSid;
 
 let conversation="";
 let sampleConversation=process.env.SAMPLE_CONVO;
+let patientPhoneNumber=process.env.DEFAULT_PATIENT_PHONE;
 
 const PORT = process.env.PORT || 3000;
 
@@ -67,6 +69,11 @@ app.ws("/connection", (ws, req) => {
   const patient_transcriptionService = new TranscriptionService();
   const clinician_transcriptionService = new TranscriptionService();
   //const ttsService = new TextToSpeechService({});
+
+  const airtableService = new AirtableService();
+  const client = require('twilio')(accountSid, authToken);
+
+
   
   let marks = []
   let interactionCount = 0
@@ -74,15 +81,29 @@ app.ws("/connection", (ws, req) => {
   // Incoming from MediaStream
   ws.on("message", function message(data) {
     const msg = JSON.parse(data);
+    //console.log(msg);
     if (msg.event === "start") {
       user = msg.start.customParameters.participant;
       if (user === 'patient'){
         patientStreamSid = msg.start.streamSid;
         console.log(`Starting patient Media Stream for ${patientStreamSid}`);
+
+        //get the from phone number from call sid and insert a record in Airtable
+        //TODO: update if a record already exists with this phone number
+        
+        let patientCallsid = msg.start.callSid;
+        client.calls(patientCallsid)
+              .fetch()
+              .then(call => {
+                console.log(call.from);
+                patientPhoneNumber = call.from;
+                airtableService.createRecord(patientPhoneNumber);
+              });
       }
       else if (user === 'clinician'){
         clinicianStreamSid = msg.start.streamSid;
         console.log(`Starting clinician Media Stream for ${clinicianStreamSid}`);
+        console.log(`Patient number: ${patientPhoneNumber}`);
       }
     } else if (msg.event === "media") {
         if (msg.streamSid == patientStreamSid)
@@ -107,8 +128,12 @@ app.ws("/connection", (ws, req) => {
         console.log ("==============================================");  
 
         //call GPT service to summarize the sample conversation
-        //TODO: using sample conversaion for quick testing and to reduce Deepgram usage. change to use the real conversation
-        gptService.completion(sampleConversation, 10);
+        //TODO: using sample conversation for quick testing and to reduce Deepgram usage. change to use the real conversation
+        if (process.env.TEST_MODE === "yes")
+          gptService.completion(sampleConversation, 10);
+        else
+          gptService.completion(conversation, 10);
+
       }
 
     }
@@ -160,6 +185,7 @@ app.ws("/connection", (ws, req) => {
   gptService.on('gptreply', async (gptReply, icount) => {
     console.log(`Interaction ${icount}: GPT -> TTS: ${gptReply.partialResponse}`.green )
     //ttsService.generate(gptReply, icount);
+    airtableService.updateSummary(patientPhoneNumber, gptReply.partialResponse);
   });
 
   ttsService.on("speech", (responseIndex, audio, label, icount) => {

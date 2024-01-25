@@ -1,3 +1,5 @@
+'use strict';
+const util = require('util');
 const airtable = require("airtable");
 
 let base = null;
@@ -12,13 +14,36 @@ class AirtableService  {
   }
 
 
+  deleteRecord(phoneNumber){
+    let airtableRecordId = null;
+    base(process.env.AIRTABLE_TABLE_NAME).select({
+      filterByFormula: `phone_number = "${phoneNumber}"`
+    }).eachPage((records, fetchNextPage) => {
+      records.forEach(record => {
+        //console.log(util.inspect(record, {depth: null}));
+        airtableRecordId = record.getId();
+        console.log("airtableRecordId: " + airtableRecordId);
+
+       base(process.env.AIRTABLE_TABLE_NAME).destroy(airtableRecordId).then(() => {
+          console.log('Record deleted successfully');
+        }).catch(err => {
+          console.error('Error deleting record:', err);
+        });
+
+      });
+      fetchNextPage();
+    }, err => {
+      if (err) {
+        console.error('Error retrieving records:', err);
+      }
+    })
+  }
 
   createRecord(phoneNumber) {
-    console.log("phoneNumber: " + phoneNumber);
     base(process.env.AIRTABLE_TABLE_NAME).create({
       phone_number: phoneNumber
     }).then(record => {
-      console.log('Created record:', record);
+      console.log('Created record for:', phoneNumber);
     }).catch(err => {
       console.error('Error creating record:', err);
     });
@@ -27,17 +52,13 @@ class AirtableService  {
   //update the the patient record with the conversation sumary
   //TODO: refacrtor the code to use async/await to make it clean
   updateSummary(phoneNumber, summary) {
-    console.log("phoneNumber...update summary: " + summary + "::" + process.env.AIRTABLE_TABLE_NAME + " : " + phoneNumber);
     let airtableRecordId;
     
     //find the patient record based on the phone number and the update the summary field
     base(process.env.AIRTABLE_TABLE_NAME).select({
-      //filterByFormula: 'phone_number = "alpha"'
       filterByFormula: `phone_number = "${phoneNumber}"`
     }).eachPage((records, fetchNextPage) => {
       records.forEach(record => {
-        console.log('Retrieved record:', record);
-        //console.log('Retrieved record:', record.getId());
         airtableRecordId = record.getId();
         console.log("airtableRecordId: " + airtableRecordId);
 

@@ -89,14 +89,14 @@ app.ws("/connection", (ws, req) => {
         console.log(`Starting patient Media Stream for ${patientStreamSid}`);
 
         //get the from phone number from call sid and insert a record in Airtable
-        //TODO: update if a record already exists with this phone number
-        
         let patientCallsid = msg.start.callSid;
         client.calls(patientCallsid)
               .fetch()
               .then(call => {
                 console.log(call.from);
                 patientPhoneNumber = call.from;
+                //clean up existing patient record before creating a new record
+                //  airtableService.deleteRecord(patientPhoneNumber);
                 airtableService.createRecord(patientPhoneNumber);
               });
       }
@@ -131,8 +131,12 @@ app.ws("/connection", (ws, req) => {
         //TODO: using sample conversation for quick testing and to reduce Deepgram usage. change to use the real conversation
         if (process.env.TEST_MODE === "yes")
           gptService.completion(sampleConversation, 10);
-        else
+        else{
+          //Set the context for GPT service to summarize the conversation
+          gptService.setSummaryContext();
           gptService.completion(conversation, 10);
+        }
+          
 
       }
 
@@ -178,7 +182,7 @@ app.ws("/connection", (ws, req) => {
     if (!text) { return; }
     conversation = conversation + "\r\n Clinician: " + text;
     console.log(`Clinician interaction ${interactionCount} – STT -> GPT: ${text}`.yellow);
-    //gptService.completion(text, interactionCount);
+    gptService.completion(text, interactionCount);
     interactionCount += 1;
   });
   
@@ -186,6 +190,12 @@ app.ws("/connection", (ws, req) => {
     console.log(`Interaction ${icount}: GPT -> TTS: ${gptReply.partialResponse}`.green )
     //ttsService.generate(gptReply, icount);
     airtableService.updateSummary(patientPhoneNumber, gptReply.partialResponse);
+  });
+
+  gptService.on('gpttask', async (gptReply, icount) => {
+    console.log("updating Sync with interpreted tasks");
+    //ttsService.generate(gptReply, icount);
+    //airtableService.updateSummary(patientPhoneNumber, gptReply.partialResponse);
   });
 
   ttsService.on("speech", (responseIndex, audio, label, icount) => {

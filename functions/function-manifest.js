@@ -3,15 +3,15 @@ const tools = [
   {
     type: "function",
     function: {
-      name: "checkInventory",
-      description: "Check the inventory of airpods, airpods pro or airpods max.",
+      name: "orderLabs",
+      description: "place lab order",
       parameters: {
         type: "object",
         properties: {
           model: {
             type: "string",
-            "enum": ["airpods", "airpods pro", "airpods max"],
-            description: "The model of airpods, either the airpods, airpods pro or airpods max",
+            "enum": ["complete_count", "VitD", "panel"],
+            description: "lab order for blood report or Vit D or panel",
           },
         },
         required: ["model"],
@@ -30,15 +30,15 @@ const tools = [
   {
     type: "function",
     function: {
-      name: "checkPrice",
-      description: "Check the price of given model of airpods, airpods pro or airpods max.",
+      name: "orderImaging",
+      description: "place imaging order",
       parameters: {
         type: "object",
         properties: {
           model: {
             type: "string",
-            "enum": ["airpods", "airpods pro", "airpods max"],
-            description: "The model of airpods, either the airpods, airpods pro or airpods max",
+            "enum": ["x-ray wrist", "x-ray hand", "x-ray chest"],
+            description: "imaging order for x-rays",
           },
         },
         required: ["model"],
@@ -46,49 +46,14 @@ const tools = [
       returns: {
         type: "object",
         properties: {
-          price: {
+          stock: {
             type: "integer",
-            description: "the price of the model"
+            description: "An integer containing how many of the model are in currently in stock."
           }
         }
       }
     },
-  },
-  {
-    type: "function",
-    function: {
-      name: "placeOrder",
-      description: "Places an order for a set of airpods.",
-      parameters: {
-        type: "object",
-        properties: {
-          model: {
-            type: "string",
-            "enum": ["airpods", "airpods pro"],
-            description: "The model of airpods, either the regular or pro",
-          },
-          quantity: {
-            type: "integer",
-            description: "The number of airpods they want to order",
-          },
-        },
-        required: ["type", "quantity"],
-      },
-      returns: {
-        type: "object",
-        properties: {
-          price: {
-            type: "integer",
-            description: "The total price of the order including tax"
-          },
-          orderNumber: {
-            type: "integer",
-            description: "The order number associated with the order."
-          }
-        }
-      }
-    },
-  },
+  }
 ];
 
 module.exports = tools;

@@ -26,8 +26,21 @@ const PORT = process.env.PORT || 3000;
 
 
 
+/*
 const airtableService = new AirtableService();
 
-airtableService.updateSummary(patientPhoneNumber, "test summary of the conversation");
-  
+airtableService.deleteRecord("+14083985848");
+airtableService.createRecord("+14083985848");
+airtableService.updateSummary("+14083985848", "test summary of the conversation");
+*/
+
+
+const gptService = new GptService();
+gptService.completion("lets order x-ray for your wrist", 10);
+
+gptService.on('gptreply', async (gptReply, icount) => {
+    console.log(`Interaction ${icount}: GPT -> TTS: ${gptReply.partialResponse}`.green )
+    //ttsService.generate(gptReply, icount);
+    //airtableService.updateSummary(patientPhoneNumber, gptReply.partialResponse);
+  });
   

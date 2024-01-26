@@ -64,6 +64,16 @@ app.get("/profile", (req, res) => {
 
 });
 
+//pass orders in JSON format {"phonenumber": "+14083985848", "order": "order cbc"} to save them in Airtable
+app.post("/update/laborder", (req, res) => {
+
+  const airtableService = new AirtableService();
+  airtableService.updateLabOrders(req.body.phonenumber, req.body.order);
+
+  res.send(null);
+});
+
+
 
 app.post("/incoming/patient", (req, res) => {
   res.status(200);
@@ -243,8 +253,8 @@ app.ws("/connection", (ws, req) => {
   });
 
   gptService.on('gpttask', async (gptReply, icount) => {
-    console.log("push the task to the sync object");
-    syncService.addListItemToList(taskSyncListName, gptReply);
+    console.log("push the task to the sync object: " + gptReply);
+    syncService.addListItemToList(patientPhoneNumber, taskSyncListName, gptReply);
   });
 
   ttsService.on("speech", (responseIndex, audio, label, icount) => {

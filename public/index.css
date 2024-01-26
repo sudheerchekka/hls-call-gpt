@@ -1,0 +1,46 @@
+#tasks-list {
+    padding: 10px;
+}
+
+#tasks-list  li {
+    background: darkgrey;
+    padding: 10px;
+    margin: 10px;
+}
+
+.transcript {
+    max-width: 400px;
+    margin: 0 auto; 
+    overflow: hidden;
+  }
+
+  .message {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+
+  .patient, .doctor {
+    border-radius: 10px;
+    padding: 10px;
+    max-width: 70%;
+  }
+
+  .patient {
+    background-color: #e5e5ea;
+    margin-right: auto;
+  }
+
+  .doctor {
+    background-color: #007bff;
+    color: #fff;
+    margin-left: auto;
+  }
+
+  .title {
+    padding:1px;
+    font-size: 7pt;
+    font-weight: bold;
+    color: #000000;
+  }

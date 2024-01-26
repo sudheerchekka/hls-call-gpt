@@ -1,0 +1,59 @@
+body {
+font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
+color: #0d122b;
+border-top: 5px solid #f22f46;
+}
+
+main {
+max-width: 800px;
+margin: 0 auto;
+}
+
+a {
+color: #008cff;
+}
+
+footer {
+margin: 0 auto;
+max-width: 800px;
+text-align: center;
+}
+
+footer p {
+border-top: 1px solid rgba(148, 151, 155, 0.2);
+padding-top: 2em;
+margin: 0 2em;
+}
+
+.container {
+width: 80%;
+margin: 20px auto;
+display: flex;
+justify-content: space-between;
+}
+
+table {
+width: 48%;
+/* Adjust as needed to leave some space between the tables */
+border-collapse: collapse;
+margin-top: 20px;
+}
+
+th,
+td {
+padding: 12px;
+text-align: left;
+border-bottom: 1px solid #ddd;
+}
+
+th {
+background-color: #3498db;
+/* Blue heading */
+color: #fff;
+/* White text for heading */
+}
+
+tr:hover {
+background-color: #f5f5f5;
+}

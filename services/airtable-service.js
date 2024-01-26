@@ -82,6 +82,43 @@ class AirtableService  {
     })
   }
 
+
+  //update the the patient record with the conversation sumary
+  //TODO: refacrtor the code to use async/await to make it clean
+  updateLabOrders(phoneNumber, labOrder) {
+    let airtableRecordId;
+    let existingLabOrders;
+    
+    //find the patient record based on the phone number and the update the summary field
+    base(process.env.AIRTABLE_TABLE_NAME).select({
+      filterByFormula: `phone_number = "${phoneNumber}"`
+    }).eachPage((records, fetchNextPage) => {
+      records.forEach(record => {
+        airtableRecordId = record.getId();
+        existingLabOrders = record.get('lab_orders') || "";
+        console.log("airtableRecordId: " + airtableRecordId);
+        console.log("existingLabOrders: " + existingLabOrders);
+
+        //update the summary
+        base(process.env.AIRTABLE_TABLE_NAME).update(airtableRecordId,{
+          lab_orders: existingLabOrders + "\n" + labOrder
+        }, (err, record) => {
+          if (err) {
+            console.error(err)
+            return
+          }
+          console.log(record.get('appointment_summary'))
+        });
+
+      });
+      fetchNextPage();
+    }, err => {
+      if (err) {
+        console.error('Error retrieving records:', err);
+      }
+    })
+  }
+
 }
 
 module.exports = { AirtableService }

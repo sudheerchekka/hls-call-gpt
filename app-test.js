@@ -68,4 +68,7 @@ segmentService.getSegmentData(userId,"traits",limit).then(profile => {
   jsonObj = JSON.stringify({"order":"Order Complete Blood Cell count"});
   const syncService = new SyncService();
   //syncService.addListItemToList(process.env.TWILI_SYNC_LIST_CONVERSATION_SID,jsonObj);
-  syncService.addListItemToList(process.env.TWILIO_SYNC_LIST_RECO_SID,jsonObj);
+  //syncService.addListItemToList(process.env.TWILIO_SYNC_LIST_RECO_SID,jsonObj);
+  //syncService.clearSyncListItems(process.env.TWILI_SYNC_LIST_CONVERSATION_SID);
+  //syncService.clearSyncListItems(process.env.TWILIO_SYNC_LIST_RECO_SID);
+  syncService.tokenGenerator("example");

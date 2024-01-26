@@ -26,7 +26,7 @@ class SyncService {
       this.accountSid,
       process.env.TWILIO_API_KEY,
       process.env.TWILIO_API_SECRET,
-      {identity}
+      {identity: "${identity}"}
     );
     // Assign the provided identity
     //token.identity = identity;
@@ -38,10 +38,12 @@ class SyncService {
     token.addGrant(syncGrant);
 
     // Serialize the token to a JWT string and include it in a JSON response
-    return {
+    /*return {
       identity: token.identity,
       token: token.toJwt()
-    };
+    };*/
+    console.log(token.toJwt());
+    return token.toJwt();
   }
 
   // Function to add a ListItem to a Sync List
@@ -57,5 +59,24 @@ class SyncService {
       console.error(`Error adding ListItem to Sync List: ${error.message}`);
     }
   }
+
+
+  clearSyncListItems(listSid){
+
+    this.client.sync.v1.services(process.env.TWILIO_SYNC_SERVICE_SID)
+    .syncLists(listSid)
+    .syncListItems
+    .list({limit: 20})
+    .then(syncListItems => syncListItems.forEach(s => {
+      console.log(s);
+      this.client.sync.v1.services(process.env.TWILIO_SYNC_SERVICE_SID)
+      .syncLists(listSid)
+      .syncListItems(s.index)
+      .remove();
+      }));
+          
+  }
+
 }
+
 module.exports = { SyncService }

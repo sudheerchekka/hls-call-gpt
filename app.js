@@ -1,4 +1,5 @@
 require("dotenv").config();
+const path = require("path");
 const express = require("express");
 const ExpressWs = require("express-ws");
 const colors = require('colors');
@@ -14,6 +15,8 @@ const { SyncService } = require("./services/sync-service");
 const app = express();
 ExpressWs(app);
 
+app.use(express.static(path.join(__dirname, "public")));
+
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
@@ -24,6 +27,27 @@ let sampleConversation=process.env.SAMPLE_CONVO;
 let patientPhoneNumber=process.env.DEFAULT_PATIENT_PHONE;
 
 const PORT = process.env.PORT || 3000;
+
+
+app.get("/", function (req, res) {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
+app.get("/access", (req, res) => {
+  console.log("in access");
+  const syncService = new SyncService();
+  syncToken = syncService.tokenGenerator();
+  const response = {
+    "convoSyncListName": process.env.TWILI_SYNC_LIST_CONVERSATION_NAME,
+    "taskSyncListName": process.env.TWILI_SYNC_LIST_RECO_NAME,
+    "token":  syncToken
+  };
+
+  //res.send(response);
+  //return res.json(response);
+  return res.send(JSON.stringify(response));
+});
+
 
 app.post("/incoming/patient", (req, res) => {
   res.status(200);

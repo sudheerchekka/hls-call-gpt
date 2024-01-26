@@ -4,13 +4,29 @@ function orderLabs(functionArgs) {
   console.log("model: " + model);
   
   if (model?.toLowerCase().includes("complete_count")) {
-    return JSON.stringify({ order:"Order Complete Blood Cell count" });
+    return JSON.stringify({
+      "cpt":"12390",
+      "orders":[
+          { "order":"Order Complete Blood Cell count"}
+        ]
+      });
   } else if (model?.toLowerCase().includes("vitd")) {
     console.log("vitd");
-    return JSON.stringify({ order: "Order Vit D level" });
+    return JSON.stringify({
+      "cpt":"12490",
+      "orders":[
+          { "order":"Order Vit D level"}
+        ]
+      });
   } else {
-    return JSON.stringify({ order: "Order metabolic panel" });
+    return JSON.stringify({
+      "cpt":"12590",
+      "orders":[
+          { "order":"Order metabolic panel"}
+        ]
+      });
   }
 }
 
 module.exports = orderLabs;
+

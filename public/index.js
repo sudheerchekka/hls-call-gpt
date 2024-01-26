@@ -15,8 +15,8 @@ window.addEventListener('load', async () => {
       );*/
       const response = await fetch('/access');
       const responseJSON = await response.json();
-      convoSyncListName = responseJSON.convoSyncListName;
-      tasksSyncListName = responseJSON.taskSyncListName;
+      const convoSyncListName = responseJSON.convoSyncListName;
+      const tasksSyncListName = responseJSON.taskSyncListName;
       token = responseJSON.token;
 
       const syncClient = new Twilio.Sync.Client(token);
@@ -59,7 +59,7 @@ window.addEventListener('load', async () => {
         // Add the new message to the list by adding a new <li> element
         // containing the incoming message's text
         //const newListItem = document.createElement('<input type="checkbox">');
-        tasksList.innerHTML += `<li> ${item.data.order} <button id="" onclick="createTask()" >proceed</button><button>clear</button></li>`;
+        tasksList.innerHTML += `<li id="${item.id}"> ${item.data.order} <button onclick="createTask(${item})" >proceed</button><button>clear</button></li>`;
       });
 
       // Make sure to refresh the access token before it expires for an uninterrupted experience! 
@@ -80,10 +80,61 @@ window.addEventListener('load', async () => {
           loadingMessage.style.fontWeight = 'bold';*/
         }
       });
+      
+      function insertDataIntoTable(jsonData) {
+        // Select the table using its class
+        var table = document.querySelector('.profile-table');
+  
+        // Iterate over the JSON object and insert a row for each key-value pair
+        for (var key in jsonData) {
+          if (jsonData.hasOwnProperty(key)) {
+            var newRow = table.insertRow();
+            var cellKey = newRow.insertCell(0);
+            var cellValue = newRow.insertCell(1);
+  
+            // Set the key and value in the cells
+            cellKey.appendChild(document.createTextNode(key));
+            cellValue.appendChild(document.createTextNode(jsonData[key]));
+          }
+        }
+      }
+
+      async function fetchProfileTraits(){
+        try {
+          const profileTraits = await fetch('/profile').then((res) =>
+            res.json()
+          );
+          console.log(profileTraits);
+
+          // Call the updateTable function with your JSON data
+          insertDataIntoTable(profileTraits);
+        } catch (error) {
+            console.error(error);
+        }
+      }
+      fetchProfileTraits();
+
+      // Orderlab results
+      async function createTask(item){
+        try {
+          const response = await fetch('/order', {
+            method: 'post',
+            body: item,
+            headers: {'Content-Type': 'application/json'}
+          });
+          const data = await response.json();
+          console.log(data);
+
+        } catch (error) {
+            console.error(error);
+        }
+      }
+
     } catch (error) {
         console.error(error);
         /*loadingMessage.innerText = 'Unable to load messages 😭';
         loadingMessage.style.color = 'red';
         loadingMessage.style.fontWeight = 'bold';*/
     }
+    
 });

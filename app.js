@@ -9,6 +9,7 @@ const { StreamService } = require("./services/stream-service");
 const { TranscriptionService } = require("./services/transcription-service");
 const { TextToSpeechService } = require("./services/tts-service");
 const { AirtableService } = require("./services/airtable-service");
+const { SyncService } = require("./services/sync-service");
 
 const app = express();
 ExpressWs(app);
@@ -72,6 +73,7 @@ app.ws("/connection", (ws, req) => {
 
   const airtableService = new AirtableService();
   const client = require('twilio')(accountSid, authToken);
+  const syncService = new SyncService();
 
 
   
@@ -175,6 +177,9 @@ app.ws("/connection", (ws, req) => {
     conversation = conversation + "\r\n Patient: " + text;
     console.log(`Patient interaction ${interactionCount} – STT -> GPT: ${text}`.yellow);
     //gptService.completion(text, interactionCount);
+    patientJSON = `{"user":"patient", "content":"${text}"}`;
+    console.log("patientJSON: " + patientJSON);
+    syncService.addListItemToList(process.env.TWILI_SYNC_LIST_CONVERSATION_SID, patientJSON);
     interactionCount += 1;
   });
 
@@ -184,6 +189,11 @@ app.ws("/connection", (ws, req) => {
     console.log(`Clinician interaction ${interactionCount} – STT -> GPT: ${text}`.yellow);
     gptService.completion(text, interactionCount);
     interactionCount += 1;
+
+    clinicianJSON = `{"user":"clinician", "content":"${text}"}`;
+    console.log("clinicianJSON: " + clinicianJSON);
+    console.log("JSON.stringify.clinicianJSON: " + JSON.stringify(clinicianJSON));
+    syncService.addListItemToList(process.env.TWILI_SYNC_LIST_CONVERSATION_SID, clinicianJSON);
   });
   
   gptService.on('gptreply', async (gptReply, icount) => {
@@ -193,9 +203,8 @@ app.ws("/connection", (ws, req) => {
   });
 
   gptService.on('gpttask', async (gptReply, icount) => {
-    console.log("updating Sync with interpreted tasks");
-    //ttsService.generate(gptReply, icount);
-    //airtableService.updateSummary(patientPhoneNumber, gptReply.partialResponse);
+    console.log("push the task to the sync object");
+    syncService.addListItemToList(process.env.TWILIO_SYNC_LIST_RECO_SID, gptReply);
   });
 
   ttsService.on("speech", (responseIndex, audio, label, icount) => {

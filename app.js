@@ -11,6 +11,7 @@ const { TranscriptionService } = require("./services/transcription-service");
 const { TextToSpeechService } = require("./services/tts-service");
 const { AirtableService } = require("./services/airtable-service");
 const { SyncService } = require("./services/sync-service");
+const { SegmentService } = require("./services/segment-service");
 
 const app = express();
 ExpressWs(app);
@@ -26,6 +27,9 @@ let conversation="";
 let sampleConversation=process.env.SAMPLE_CONVO;
 let patientPhoneNumber=process.env.DEFAULT_PATIENT_PHONE;
 
+const convoSyncListName = process.env.TWILI_SYNC_LIST_CONVERSATION_NAME;
+const taskSyncListName = process.env.TWILI_SYNC_LIST_RECO_NAME;
+
 const PORT = process.env.PORT || 3000;
 
 
@@ -37,15 +41,27 @@ app.get("/access", (req, res) => {
   console.log("in access");
   const syncService = new SyncService();
   syncToken = syncService.tokenGenerator();
+
   const response = {
-    "convoSyncListName": process.env.TWILI_SYNC_LIST_CONVERSATION_NAME,
-    "taskSyncListName": process.env.TWILI_SYNC_LIST_RECO_NAME,
+    "convoSyncListName": convoSyncListName,
+    "taskSyncListName": taskSyncListName,
     "token":  syncToken
   };
 
   //res.send(response);
   //return res.json(response);
   return res.send(JSON.stringify(response));
+});
+
+app.get("/profile", (req, res) => {
+  console.log("fetching segment profile");
+  const segmentService = new SegmentService();
+  const profile = segmentService.getSegmentData(segmentService.getUserId(),"traits", 100)
+  .then(data => {
+    console.log("profile traits - " + data);
+    return res.send(data.traits);
+  });
+
 });
 
 
@@ -203,7 +219,7 @@ app.ws("/connection", (ws, req) => {
     //gptService.completion(text, interactionCount);
     patientJSON = `{"user":"patient", "content":"${text}"}`;
     console.log("patientJSON: " + patientJSON);
-    syncService.addListItemToList(process.env.TWILI_SYNC_LIST_CONVERSATION_SID, patientJSON);
+    syncService.addListItemToList(convoSyncListName, patientJSON);
     interactionCount += 1;
   });
 
@@ -217,7 +233,7 @@ app.ws("/connection", (ws, req) => {
     clinicianJSON = `{"user":"clinician", "content":"${text}"}`;
     console.log("clinicianJSON: " + clinicianJSON);
     console.log("JSON.stringify.clinicianJSON: " + JSON.stringify(clinicianJSON));
-    syncService.addListItemToList(process.env.TWILI_SYNC_LIST_CONVERSATION_SID, clinicianJSON);
+    syncService.addListItemToList(convoSyncListName, clinicianJSON);
   });
   
   gptService.on('gptreply', async (gptReply, icount) => {
@@ -228,7 +244,7 @@ app.ws("/connection", (ws, req) => {
 
   gptService.on('gpttask', async (gptReply, icount) => {
     console.log("push the task to the sync object");
-    syncService.addListItemToList(process.env.TWILIO_SYNC_LIST_RECO_SID, gptReply);
+    syncService.addListItemToList(taskSyncListName, gptReply);
   });
 
   ttsService.on("speech", (responseIndex, audio, label, icount) => {

@@ -47,14 +47,34 @@ class SyncService {
   }
 
   // Function to add a ListItem to a Sync List
-  async addListItemToList(listSid, dataObject) {
+  async addListItemToList(patientPhoneNumber, listSid, dataObject) {
     try {
-      console.log("Adding item to sync List - "+ listSid);
-      const syncList = await this.client.sync.v1.services(this.syncServiceSid)
+      let jsonObj = JSON.parse(dataObject);
+      let newOrder = {};
+      if (jsonObj.orders){
+        for(var ordervar in jsonObj.orders){
+          //console.log(" order.order : " + jsonObj.orders[ordervar].order);
+          newOrder.id = patientPhoneNumber;
+          newOrder.order = jsonObj.orders[ordervar].order
+          console.log("adding new order to Sync: " + JSON.stringify(newOrder));
+
+        const syncList = await this.client.sync.v1.services(this.syncServiceSid)
         .syncLists(listSid)
         .syncListItems
-              .create({data: dataObject})
+              .create({data: newOrder})
               .then(sync_list_item => console.log(sync_list_item.index));
+        }
+      }
+      else{
+        jsonObj.id = patientPhoneNumber
+        const syncList = await this.client.sync.v1.services(this.syncServiceSid)
+        .syncLists(listSid)
+        .syncListItems
+              .create({data: jsonObj})
+              .then(sync_list_item => console.log(sync_list_item.index));
+      }
+      
+      
     } catch (error) {
       console.error(`Error adding ListItem to Sync List: ${error.message}`);
     }

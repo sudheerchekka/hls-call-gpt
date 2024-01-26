@@ -50,7 +50,7 @@ window.addEventListener('load', async () => {
 
       tasksList.innerHTML = existingTasksItems.items
         .reverse()
-        .map((item) => `<input type="checkbox">  ${item.data.order} <br>`)
+        .map((item) => `<li>  ${item.data.order} <button id="" onclick="createTask()" >proceed</button><button>clear</button></li>`)
         .join('');
       // Add an event listener to the List so that incoming messages can
       // be displayed in real-time
@@ -59,7 +59,7 @@ window.addEventListener('load', async () => {
         // Add the new message to the list by adding a new <li> element
         // containing the incoming message's text
         //const newListItem = document.createElement('<input type="checkbox">');
-        tasksList.innerHTML += `<input type="checkbox"> ${item.data.order} <br>`;
+        tasksList.innerHTML += `<li> ${item.data.order} <button id="" onclick="createTask()" >proceed</button><button>clear</button></li>`;
       });
 
       // Make sure to refresh the access token before it expires for an uninterrupted experience! 

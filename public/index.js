@@ -1,5 +1,5 @@
 window.addEventListener('load', async () => {
-    const convoList = document.getElementById('convo-list');
+    const convoList = document.getElementById('transcript');
     const tasksList = document.getElementById('tasks-list');
     //const loadingMessage = document.getElementById('loading-message');
 
@@ -33,20 +33,29 @@ window.addEventListener('load', async () => {
       //loadingMessage.style.display = 'none';
       // Render any existing messages to the page, remember to reverse the order
       // since they're fetched in descending order in this case
-      convoList.innerHTML = existingConvoItems.items
+      existingConvoItems.items
         .reverse()
-        .map((item) => `<li class="${item.data.user}"><b>${item.data.user} :</b> ${item.data.content}</li>`)
-        .join('');
+        .map((item) => addMessage(item.data.user,item.data.content))
       // Add an event listener to the List so that incoming messages can
       // be displayed in real-time
       convoSyncList.on('itemAdded', ({ item }) => {
         console.log('Item added:', item);
         // Add the new message to the list by adding a new <li> element
         // containing the incoming message's text
-
-        convoList.innerHTML += `<li class="${item.data.user}"><b>${item.data.user} :</b> ${item.data.content}</li>`;
-    
+        
+        addMessage(item.data.user,item.data.content);
       });
+
+      function addMessage(role, text) {
+        var transcriptContainer = document.querySelector(".transcript");
+  
+        var messageContainer = document.createElement("div");
+        messageContainer.classList.add("message");
+        messageContainer.classList.add(role);
+  
+        messageContainer.innerHTML = `<span class="${role} title">${role.charAt(0).toUpperCase() + role.slice(1)}:</span> ${text}`;
+        transcriptContainer.appendChild(messageContainer);
+      }
 
       tasksList.innerHTML = existingTasksItems.items
         .reverse()
@@ -83,7 +92,7 @@ window.addEventListener('load', async () => {
       
       function insertDataIntoTable(jsonData) {
         // Select the table using its class
-        var table = document.querySelector('.profile-table');
+        var table = document.querySelector('.profile-table tbody');
   
         // Iterate over the JSON object and insert a row for each key-value pair
         for (var key in jsonData) {
@@ -117,6 +126,7 @@ window.addEventListener('load', async () => {
       // Orderlab results
       async function createTask(item){
         try {
+          console.log("task button clicked")
           const response = await fetch('/order', {
             method: 'post',
             body: item,

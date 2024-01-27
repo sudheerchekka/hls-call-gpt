@@ -27,8 +27,20 @@ window.addEventListener('load', async () => {
       const existingConvoItems = await convoSyncList.getItems({ order: 'desc' });
       const existingTasksItems = await tasksSyncList.getItems({ order: 'desc' });
 
-      console.log(existingConvoItems.items);
+      //console.log(existingConvoItems.items);
 
+      /// Add message to call transcript element
+      function addMessage(role, text) {
+        var transcriptContainer = document.querySelector(".transcript");
+  
+        var messageContainer = document.createElement("div");
+        messageContainer.classList.add("message");
+        messageContainer.classList.add(role);
+  
+        messageContainer.innerHTML = `<span class="${role} title">${role.charAt(0).toUpperCase() + role.slice(1)}:</span> ${text}`;
+        transcriptContainer.appendChild(messageContainer);
+      }
+      
       // Hide the loading message
       //loadingMessage.style.display = 'none';
       // Render any existing messages to the page, remember to reverse the order
@@ -45,30 +57,64 @@ window.addEventListener('load', async () => {
         
         addMessage(item.data.user,item.data.content);
       });
+      
+      // Create Task list HTML tags
+      function createTaskListItem(item) {
+        //console.log("task list items");
+        //console.log(item);
+        // Create the list item (li) element dynamically
+        var listItem = document.createElement('li');
+        listItem.id = item.data.id; // Set the id for the list item
+        listItem.innerText = item.data.order;
 
-      function addMessage(role, text) {
-        var transcriptContainer = document.querySelector(".transcript");
-  
-        var messageContainer = document.createElement("div");
-        messageContainer.classList.add("message");
-        messageContainer.classList.add(role);
-  
-        messageContainer.innerHTML = `<span class="${role} title">${role.charAt(0).toUpperCase() + role.slice(1)}:</span> ${text}`;
-        transcriptContainer.appendChild(messageContainer);
+        // Create the button element dynamically
+        var dynamicButton = document.createElement('button');
+        dynamicButton.textContent = 'Proceed';
+        
+        // Attach a click event listener to the button
+        dynamicButton.addEventListener('click', function() {
+            // Pass some data (in this case, a string) to the function
+            createLabOrder(item);
+        });
+
+        // Append the button to the list item
+        listItem.appendChild(dynamicButton);
+
+        // Create the button element dynamically
+        var dynamicButtonClear = document.createElement('button');
+        dynamicButtonClear.textContent = 'clear';
+        
+        // Attach a click event listener to the button
+        dynamicButtonClear.addEventListener('click', function() {
+            // Pass some data (in this case, a string) to the function
+            removeTaskListItem(item.index);
+        });
+
+        listItem.appendChild(dynamicButtonClear);
+
+        // Append the list item to the container
+        tasksList.appendChild(listItem);
       }
 
-      tasksList.innerHTML = existingTasksItems.items
+      existingTasksItems.items
         .reverse()
-        .map((item) => `<li>  ${item.data.order} <button id="" onclick="createTask()" >proceed</button><button>clear</button></li>`)
-        .join('');
+        .map((item) => createTaskListItem(item));
       // Add an event listener to the List so that incoming messages can
       // be displayed in real-time
       tasksSyncList.on('itemAdded', ({ item }) => {
         console.log('Task Item added:', item);
         // Add the new message to the list by adding a new <li> element
         // containing the incoming message's text
-        //const newListItem = document.createElement('<input type="checkbox">');
-        tasksList.innerHTML += `<li id="${item.id}"> ${item.data.order} <button onclick="createTask(${item})" >proceed</button><button>clear</button></li>`;
+        createTaskListItem(item);
+      });
+
+      tasksSyncList.on('itemRemoved', (item) => {
+        console.log('Task Item removed:', item);
+        // Add the new message to the list by adding a new <li> element
+        // containing the incoming message's text
+        let listItem = document.getElementById(item.previousItemData.id);
+        //console.log(listItem);
+        tasksList.removeChild(listItem);
       });
 
       // Make sure to refresh the access token before it expires for an uninterrupted experience! 
@@ -113,7 +159,7 @@ window.addEventListener('load', async () => {
           const profileTraits = await fetch('/profile').then((res) =>
             res.json()
           );
-          console.log(profileTraits);
+          //console.log(profileTraits);
 
           // Call the updateTable function with your JSON data
           insertDataIntoTable(profileTraits);
@@ -124,20 +170,39 @@ window.addEventListener('load', async () => {
       fetchProfileTraits();
 
       // Orderlab results
-      async function createTask(item){
+      async function createLabOrder(item){
         try {
           console.log("task button clicked")
-          const response = await fetch('/order', {
+          const dataJson = {
+            phonenumber: item.data.id,
+            order: item.data.order
+          };
+          console.log(dataJson);
+          /*
+          const response = await fetch('/laborder', {
             method: 'post',
-            body: item,
+            body: JSON.stringify(dataJson),
             headers: {'Content-Type': 'application/json'}
           });
           const data = await response.json();
           console.log(data);
+          */
 
         } catch (error) {
             console.error(error);
         }
+      }
+
+      // clear tasklist item when clear clicked
+      function removeTaskListItem(itemIndex) {
+        console.log("clear clicked to remove index - " + itemIndex);
+        tasksSyncList.remove(itemIndex)
+          .then(() => {
+            console.log('Item removed successfully');
+          })
+          .catch((error) => {
+            console.error('Error removing item:', error);
+          });
       }
 
     } catch (error) {

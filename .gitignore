@@ -145,3 +145,5 @@ dist
 
 # Test file
 pathik-test.js
+.env.pathik
+.DS_Store

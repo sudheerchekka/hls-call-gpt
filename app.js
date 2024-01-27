@@ -61,12 +61,11 @@ app.get("/profile", (req, res) => {
     console.log("profile traits - " + data);
     return res.send(data.traits);
   });
-
 });
 
 //pass orders in JSON format {"phonenumber": "+14083985848", "order": "order cbc"} to save them in Airtable
-app.post("/update/laborder", (req, res) => {
-
+app.post("/laborder", (req, res) => {
+  console.log(req.body);
   const airtableService = new AirtableService();
   airtableService.updateLabOrders(req.body.phonenumber, req.body.order);
 

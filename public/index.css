@@ -45,3 +45,7 @@
     font-weight: bold;
     color: #000000;
   }
+
+  .hidden {
+    display: none;
+  }

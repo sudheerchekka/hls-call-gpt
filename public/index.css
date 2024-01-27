@@ -1,3 +1,34 @@
+/* bootstrap-icons@1.11.3*/
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
+/* patient profile */
+
+.profile-border {
+  height: 40%;
+}
+
+.profile-border > h6 {
+  margin: 10px;
+}
+
+.profile-border > .container {
+  height: 70%;
+}
+
+.profile-table tr {
+    display: inline-block;
+    width: 33%;
+}
+
+.profile-table tr > td:first-child {
+  font-weight: bold;
+}
+
+.profile-table tr > td {
+    display: block;
+}
+
+/* tasks */
 #tasks-list {
     padding: 10px;
 }
@@ -8,6 +39,8 @@
     margin: 10px;
 }
 
+
+/* transcript */
 .transcript {
     max-width: 400px;
     margin: 0 auto; 
@@ -44,8 +77,4 @@
     font-size: 7pt;
     font-weight: bold;
     color: #000000;
-  }
-
-  .hidden {
-    display: none;
   }

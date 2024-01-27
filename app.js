@@ -229,7 +229,7 @@ app.ws("/connection", (ws, req) => {
     //gptService.completion(text, interactionCount);
     patientJSON = `{"user":"patient", "content":"${text}"}`;
     console.log("patientJSON: " + patientJSON);
-    syncService.addListItemToList(convoSyncListName, patientJSON);
+    syncService.addConvoListItemSync(convoSyncListName, patientJSON);
     interactionCount += 1;
   });
 
@@ -242,8 +242,7 @@ app.ws("/connection", (ws, req) => {
 
     clinicianJSON = `{"user":"clinician", "content":"${text}"}`;
     console.log("clinicianJSON: " + clinicianJSON);
-    console.log("JSON.stringify.clinicianJSON: " + JSON.stringify(clinicianJSON));
-    syncService.addListItemToList(convoSyncListName, clinicianJSON);
+    syncService.addConvoListItemSync(convoSyncListName, clinicianJSON);
   });
   
   gptService.on('gptreply', async (gptReply, icount) => {
@@ -254,7 +253,7 @@ app.ws("/connection", (ws, req) => {
 
   gptService.on('gpttask', async (gptReply, icount) => {
     console.log("push the task to the sync object: " + gptReply);
-    syncService.addListItemToList(patientPhoneNumber, taskSyncListName, gptReply);
+    syncService.addTaskListItemSync(patientPhoneNumber, taskSyncListName, gptReply);
   });
 
   ttsService.on("speech", (responseIndex, audio, label, icount) => {

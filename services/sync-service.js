@@ -46,9 +46,24 @@ class SyncService {
     return token.toJwt();
   }
 
-  // Function to add a ListItem to a Sync List
-  async addListItemToList(patientPhoneNumber, listSid, dataObject) {
+   // Function to add a ListItem to a Sync List
+   async addConvoListItemSync(listSid, dataObject) {
     try {
+      const syncList = await this.client.sync.v1.services(this.syncServiceSid)
+      .syncLists(listSid)
+      .syncListItems
+            .create({data: dataObject})
+            .then(sync_list_item => console.log(sync_list_item.index));
+    } catch (error) {
+      console.error(`Error adding ListItem to Sync List: ${error.message}`);
+    }
+  }
+
+  // Function to add a ListItem to a Sync List
+  async addTaskListItemSync(patientPhoneNumber, listSid, dataObject) {
+    try {
+
+      console.log(dataObject);
       let jsonObj = JSON.parse(dataObject);
       let newOrder = {};
       if (jsonObj.orders){

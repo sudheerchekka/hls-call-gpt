@@ -64,7 +64,7 @@ window.addEventListener('load', async () => {
         //console.log(item);
         // Create the list item (li) element dynamically
         var listItem = document.createElement('li');
-        listItem.id = item.data.id; // Set the id for the list item
+        listItem.id = item.data.id+item.index; // Set the id for the list item
         listItem.innerText = item.data.order;
 
         // Create the button element dynamically
@@ -112,7 +112,7 @@ window.addEventListener('load', async () => {
         console.log('Task Item removed:', item);
         // Add the new message to the list by adding a new <li> element
         // containing the incoming message's text
-        let listItem = document.getElementById(item.previousItemData.id);
+        let listItem = document.getElementById(item.previousItemData.id+item.index);
         //console.log(listItem);
         tasksList.removeChild(listItem);
       });

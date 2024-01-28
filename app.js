@@ -75,22 +75,21 @@ app.post("/savelaborder", (req, res) => {
 });
 
 app.get("/generate_convosummary", async (req, res) => {
-  console.log("in convosummary");
   const gptService = new GptService();
-  console.log("conversation: " + conversation);
   summary = await gptService.getSummary(conversation);
-  //summary = "The clinician discussed the patient's headache and hand pain, deciding to order a panel report and an x-ray for the patient's hand as the next step.\n\nAction Items:\n1. Order a panel report for the patient\n2. Order a hand x-ray for the patient."
   console.log("summary: " + summary);
-  return res.send(summary);
+  summaryJSON = {phonenumber: patientPhoneNumber, summary: summary}
+  return res.send(JSON.stringify(summaryJSON));
 });
 
-app.post("/savesummary", (req, res) => {
+app.post("/save_convosummary", async (req, res) => {
   const airtableService = new AirtableService();
   console.log("saving summary: " + req.body.summary)
+  console.log("saving summary for phone number: " + req.body.phonenumber)
   if (req.body.summary && req.body.phonenumber)
     airtableService.updateSummary(req.body.phonenumber, req.body.summary);
 
-  res.send(null);
+  res.send("saved");
 });
 
 app.post("/incoming/patient", (req, res) => {

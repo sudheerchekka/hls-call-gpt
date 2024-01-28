@@ -212,16 +212,45 @@ window.addEventListener('load', async () => {
         loadingMessage.style.fontWeight = 'bold';*/
     }
 
-    document.getElementById('getSummaryButton').addEventListener('click', function() {
+    document.getElementById('generateSummaryButton').addEventListener('click', function() {
       fetch('/generate_convosummary')
       .then(response => response.json())
       .then(data => {
           // Display the response data in the textarea
-          console.log(data);
-          //document.getElementById('summaryTextArea').innerHTML = JSON.stringify(data, null, 2);
-          document.getElementById('summaryTextArea').innerHTML = data;
+          document.getElementById('summaryTextArea').innerHTML = data.summary;
+
+          //save patient phone number in the session
+          sessionStorage.setItem('patient_phonenumber', data.phonenumber);
+          
+          //display the save button after the summary is generated
+          const button = document.getElementById('saveSummaryButton');
+          button.style.display = 'inline-block';
       })
       .catch(error => console.error('Error:', error));
+    });
+
+    document.getElementById('saveSummaryButton').addEventListener('click', async function() {
+      console.log("session ph numb: " + sessionStorage.getItem('patient_phonenumber'));
+      console.log("summary to be saves: " + document.getElementById('summaryTextArea').value);
+
+      const dataJson = {
+        phonenumber: sessionStorage.getItem('patient_phonenumber'),
+        summary: document.getElementById('summaryTextArea').value
+      };
+
+      //save the summary in airtable
+      const response = await fetch('/save_convosummary', {
+        method: 'post',
+        body: JSON.stringify(dataJson),
+        headers: {'Content-Type': 'application/json'}
+      });
+
+      //change the title and color of the button after saveing
+      const button = document.getElementById('saveSummaryButton');
+      button.innerHTML = "Saved!";
+      button.style.backgroundColor = "green";
+
+
     });
     
 });

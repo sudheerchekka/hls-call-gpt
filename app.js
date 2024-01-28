@@ -1,4 +1,5 @@
 require("dotenv").config();
+const util = require('util');
 const path = require("path");
 const express = require("express");
 const ExpressWs = require("express-ws");
@@ -17,6 +18,7 @@ const app = express();
 ExpressWs(app);
 
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json());
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -64,15 +66,15 @@ app.get("/profile", (req, res) => {
 });
 
 //pass orders in JSON format {"phonenumber": "+14083985848", "order": "order cbc"} to save them in Airtable
-app.post("/laborder", (req, res) => {
-  console.log(req.body);
+app.post("/savelaborder", (req, res) => {
   const airtableService = new AirtableService();
-  airtableService.updateLabOrders(req.body.phonenumber, req.body.order);
+  if (req.body.phonenumber && req.body.order)
+    airtableService.updateLabOrders(req.body.phonenumber, req.body.order);
 
   res.send(null);
 });
 
-app.get("/convosummary", async (req, res) => {
+app.get("/generate_convosummary", async (req, res) => {
   console.log("in convosummary");
   const gptService = new GptService();
   console.log("conversation: " + conversation);
@@ -80,6 +82,15 @@ app.get("/convosummary", async (req, res) => {
   //summary = "The clinician discussed the patient's headache and hand pain, deciding to order a panel report and an x-ray for the patient's hand as the next step.\n\nAction Items:\n1. Order a panel report for the patient\n2. Order a hand x-ray for the patient."
   console.log("summary: " + summary);
   return res.send(summary);
+});
+
+app.post("/savesummary", (req, res) => {
+  const airtableService = new AirtableService();
+  console.log("saving summary: " + req.body.summary)
+  if (req.body.summary && req.body.phonenumber)
+    airtableService.updateSummary(req.body.phonenumber, req.body.summary);
+
+  res.send(null);
 });
 
 app.post("/incoming/patient", (req, res) => {

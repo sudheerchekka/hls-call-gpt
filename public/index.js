@@ -178,15 +178,15 @@ window.addEventListener('load', async () => {
             order: item.data.order
           };
           console.log(dataJson);
-          /*
-          const response = await fetch('/laborder', {
+          
+          const response = await fetch('/savelaborder', {
             method: 'post',
             body: JSON.stringify(dataJson),
             headers: {'Content-Type': 'application/json'}
           });
-          const data = await response.json();
-          console.log(data);
-          */
+          
+          //remove the task from Sync after adding to EHR
+          removeTaskListItem(item.index);
 
         } catch (error) {
             console.error(error);
@@ -213,7 +213,7 @@ window.addEventListener('load', async () => {
     }
 
     document.getElementById('getSummaryButton').addEventListener('click', function() {
-      fetch('/convosummary')
+      fetch('/generate_convosummary')
       .then(response => response.json())
       .then(data => {
           // Display the response data in the textarea
@@ -222,6 +222,6 @@ window.addEventListener('load', async () => {
           document.getElementById('summaryTextArea').innerHTML = data;
       })
       .catch(error => console.error('Error:', error));
-  });
+    });
     
 });

@@ -36,35 +36,52 @@
               </div>
             </div>
           </div>
-          <div class="row h-75">
+          <div>
+            <div class="header-bar">Action Items</div>
+            <br>
+            <!-- Other content goes here -->
+          </div>
+          <div>
             <table>
               <thead>
                 <tr>
-                  <th>Action Items</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>
-                    <ul id="tasks-list" />
+                    <ul class ="no-bullets" id="tasks-list" />
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
+
+          <div>
+            <div class="header-bar">Conversation Summary</div>
+            <br><br>
+            <!-- Other content goes here -->
+          </div>
+
+          <div>
+            <div class="transcriptSummary" id="transcript-summary-container">
+              <!-- Conversation Summary will be added  -->
+              <button id="generateSummaryButton">Generate Summary</button>
+              <textarea cols="50" rows="5" id="summaryTextArea"></textarea>
+              <button id="saveSummaryButton" style="display: none;">Save to EHR</button>
+  
+            </div>
+          </div>
         </div>
+
         <div class="col-4 pt-3 bg-dark text-light">
           <div class="transcript" id="transcript-container">
             <!-- Messages will be added dynamically here -->
           </div>
-          <div class="transcriptSummary" id="transcript-summary-container">
-            <!-- Conversation Summary will be added  -->
-            <button id="generateSummaryButton">Generate Summary</button>
-            <textarea cols="50" rows="5" id="summaryTextArea"></textarea>
-            <button id="saveSummaryButton" style="display: none;">Save to EHR</button>
-
-          </div>
         </div>
+
+        
       </div>
     </div>
     </main>

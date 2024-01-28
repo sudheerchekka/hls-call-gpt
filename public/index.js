@@ -65,7 +65,7 @@ window.addEventListener('load', async () => {
         // Create the list item (li) element dynamically
         var listItem = document.createElement('li');
         listItem.id = item.data.id+item.index; // Set the id for the list item
-        listItem.innerText = item.data.order;
+        listItem.innerHTML = item.data.order + "&nbsp&nbsp";
 
         // Create the button element dynamically
         var dynamicButton = document.createElement('button');

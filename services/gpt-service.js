@@ -22,12 +22,6 @@ class GptService extends EventEmitter {
     this.partialResponseIndex = 0
   }
 
-  setSummaryContext(content){
-    this.userContext = [
-      { "role": "system", "content": "Summarize this clinician and patient conversaton as clinician is taking medical notes in 2 sentences. then list the action items" }
-     ]
-  }
-
   async completion(text, interactionCount, role = "user", name = "user") {
     if (name != "user") {
       this.userContext.push({ "role": role, "name": name, "content": text })
@@ -119,6 +113,39 @@ class GptService extends EventEmitter {
     this.userContext.push({"role": "assistant", "content": completeResponse})
     console.log(`GPT -> user context length: ${this.userContext.length}`.green)
   }
+
+
+  async getSummary(text) {
+    let partialResponse = ""
+    let finishReason = ""
+    this.userContext = [
+      { "role": "system", "content": "Summarize this clinician and patient conversaton as clinician is taking medical notes in 2 sentences. then list the action items" }
+     ]
+    this.userContext.push({ "role": "user", "content": text })
+
+    //Send transcription to Chat GPT
+    const stream = await this.openai.chat.completions.create({
+      model: "gpt-4",
+      messages: this.userContext,
+      tools: tools,
+      stream: true,
+    });
+
+    for await (const chunk of stream) {
+      let content = chunk.choices[0]?.delta?.content || ""      
+      finishReason = chunk.choices[0].finish_reason;
+      partialResponse += content;
+
+      // Emit last partial response and add complete response to userContext
+      if (content.trim().slice(-1) === "•" || finishReason === "stop") {
+        let summary = JSON.stringify(partialResponse);
+        console.log("getSummary: " + summary);
+        return summary;
+      }
+    }
+  }
+
+
 }
 
 module.exports = { GptService }

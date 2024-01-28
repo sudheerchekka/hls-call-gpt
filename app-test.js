@@ -29,6 +29,7 @@ const PORT = process.env.PORT || 3000;
 
 
 /*
+//Test airtable-service
 const airtableService = new AirtableService();
 
 airtableService.deleteRecord("+14083985848");
@@ -36,9 +37,19 @@ airtableService.createRecord("+14083985848");
 airtableService.updateSummary("+14083985848", "test summary of the conversation");
 */
 
+
+//Test Summary generation
+//const gptService = new GptService();
+//console.log("sample convo: " + process.env.SAMPLE_CONVO);
+//gptService.setSummaryContext();
+//summary = gptService.getSummary(process.env.SAMPLE_CONVO);
+//console.log("sample summary: " + summary);
+
+//Test task generation
 /*
 const gptService = new GptService();
 gptService.completion("lets order x-ray for your wrist", 10);
+
 
 gptService.on('gptreply', async (gptReply, icount) => {
     console.log(`Interaction ${icount}: GPT -> TTS: ${gptReply.partialResponse}`.green )
@@ -48,6 +59,7 @@ gptService.on('gptreply', async (gptReply, icount) => {
 */
 
 /*
+//Test segment-service
 const userId = 'use_fDzNFMwApuS92WpVNvZ2bK5aWA4'; // Example user ID
 const limit = "100";
 const segmentService = new SegmentService();
@@ -64,11 +76,13 @@ segmentService.getSegmentData(userId,"traits",limit).then(profile => {
     }
   });
   */
+  
 
+  //Test sync-service
   jsonObj = JSON.stringify({"order":"Order Complete Blood Cell count"});
   const syncService = new SyncService();
   //syncService.addListItemToList(process.env.TWILI_SYNC_LIST_CONVERSATION_SID,jsonObj);
   //syncService.addListItemToList(process.env.TWILIO_SYNC_LIST_RECO_SID,jsonObj);
-  //syncService.clearSyncListItems(process.env.TWILI_SYNC_LIST_CONVERSATION_SID);
-  //syncService.clearSyncListItems(process.env.TWILIO_SYNC_LIST_RECO_SID);
-  syncService.tokenGenerator("example");
+  syncService.clearSyncListItems(process.env.TWILI_SYNC_LIST_CONVERSATION_SID);
+  syncService.clearSyncListItems(process.env.TWILIO_SYNC_LIST_RECO_SID);
+  //syncService.tokenGenerator("example");

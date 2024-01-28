@@ -72,7 +72,15 @@ app.post("/laborder", (req, res) => {
   res.send(null);
 });
 
-
+app.get("/convosummary", async (req, res) => {
+  console.log("in convosummary");
+  const gptService = new GptService();
+  console.log("conversation: " + conversation);
+  summary = await gptService.getSummary(conversation);
+  //summary = "The clinician discussed the patient's headache and hand pain, deciding to order a panel report and an x-ray for the patient's hand as the next step.\n\nAction Items:\n1. Order a panel report for the patient\n2. Order a hand x-ray for the patient."
+  console.log("summary: " + summary);
+  return res.send(summary);
+});
 
 app.post("/incoming/patient", (req, res) => {
   res.status(200);
@@ -170,25 +178,7 @@ app.ws("/connection", (ws, req) => {
         console.log(`Twilio -> Patient Media stream ${patientStreamSid} ended.`.underline.red)
       else{
         console.log(`Twilio -> Clinician Media stream ${clinicianStreamSid} ended.`.underline.red)
-
-     //TODO: close the conference when the clincian ends the call
-
-      //print the consolidated conversation
-        console.log ("==============================================");
-        console.log (conversation);
-        console.log ("==============================================");  
-
-        //call GPT service to summarize the sample conversation
-        //TODO: using sample conversation for quick testing and to reduce Deepgram usage. change to use the real conversation
-        if (process.env.TEST_MODE === "yes")
-          gptService.completion(sampleConversation, 10);
-        else{
-          //Set the context for GPT service to summarize the conversation
-          gptService.setSummaryContext();
-          gptService.completion(conversation, 10);
-        }
-          
-
+        //TODO: close Twilio conference when the clincian ends the call
       }
 
     }

@@ -211,5 +211,17 @@ window.addEventListener('load', async () => {
         loadingMessage.style.color = 'red';
         loadingMessage.style.fontWeight = 'bold';*/
     }
+
+    document.getElementById('getSummaryButton').addEventListener('click', function() {
+      fetch('/convosummary')
+      .then(response => response.json())
+      .then(data => {
+          // Display the response data in the textarea
+          console.log(data);
+          //document.getElementById('summaryTextArea').innerHTML = JSON.stringify(data, null, 2);
+          document.getElementById('summaryTextArea').innerHTML = data;
+      })
+      .catch(error => console.error('Error:', error));
+  });
     
 });

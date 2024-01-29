@@ -53,6 +53,33 @@ const tools = [
         }
       }
     },
+  },
+  {
+    type: "function",
+    function: {
+      name: "sendEduLinks",
+      description: "send patient education links",
+      parameters: {
+        type: "object",
+        properties: {
+          model: {
+            type: "string",
+            "enum": ["high-blood-pressure", "wrist-exercise", "hand-exercise"],
+            description: "send patient education links",
+          },
+        },
+        required: ["model"],
+      },
+      returns: {
+        type: "object",
+        properties: {
+          stock: {
+            type: "integer",
+            description: "An integer containing how many of the model are in currently in stock."
+          }
+        }
+      }
+    },
   }
 ];
 

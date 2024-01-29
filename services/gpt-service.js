@@ -121,6 +121,8 @@ class GptService extends EventEmitter {
     this.userContext = [
       { "role": "system", "content": "Summarize this clinician and patient conversaton as clinician is taking medical notes in 2 sentences. then list the action items" }
      ]
+
+    console.log("conversation: " + text);
     this.userContext.push({ "role": "user", "content": text })
 
     //Send transcription to Chat GPT
@@ -140,6 +142,10 @@ class GptService extends EventEmitter {
       if (content.trim().slice(-1) === "•" || finishReason === "stop") {
         let summary = JSON.stringify(partialResponse);
         console.log("getSummary: " + summary);
+
+        summary = summary.replace(/\\n/g, '<br>');
+        summary = summary.replace(/\"/g, '');
+
         return summary;
       }
     }

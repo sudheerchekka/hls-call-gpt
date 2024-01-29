@@ -101,7 +101,7 @@ class SyncService {
     this.client.sync.v1.services(process.env.TWILIO_SYNC_SERVICE_SID)
     .syncLists(listSid)
     .syncListItems
-    .list({limit: 20})
+    .list({limit: 100})
     .then(syncListItems => syncListItems.forEach(s => {
       console.log(s);
       this.client.sync.v1.services(process.env.TWILIO_SYNC_SERVICE_SID)

@@ -14,9 +14,7 @@
 <body>
   <nav class="navbar bg-light-subtle" data-bs-theme="dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">
-        Jarvis <i class="bi bi-prescription"></i>
-      </a>
+      <img src="jarvis_logo.png" alt="Logo" style="width: 250px; height: 138px;">
     </div>
   </nav>
   <main">
@@ -24,7 +22,9 @@
       <div class="row">
         <div class="col-8 pt-3">
           <div class="row h-25">
+            <div class="header-bar"><h3>Patient Profile</h3> (from Segment's patient profile)</div><br>
             <div class="col text-dark-subtle">
+              <br>
               <h5>Jane Smith</h5>
               <div class="profile-border container border border-2 border-dark rounded">
                 <h6><i class="bi bi-person-circle"></i> Patient Information</h6>
@@ -37,6 +37,7 @@
             </div>
           </div>
           <div>
+              <br>
             <div class="header-bar"><h3>Suggested recommendations</h3> (generated based on patient profile)</div>
             <br>
             <label class="large-text" id="screenings_label"></label>
@@ -85,6 +86,7 @@
         </div>
 
         <div class="col-4 pt-3 bg-dark text-light">
+          <div class="header-bar"><h3>Realtime voice transcription</h3></div><br>
           <div class="transcript" id="transcript-container">
             <!-- Messages will be added dynamically here -->
           </div>

@@ -5,9 +5,9 @@ function sendEduLinks(functionArgs) {
   
   if (model?.toLowerCase().includes("high-blood-pressure")) {
     return JSON.stringify({
-      "cpt":"12https://www.uptodate.com/contents/high-blood-pressure-diet-and-weight-beyond-the-basics",
+      "cpt":"https://www.uptodate.com/contents/high-blood-pressure-diet-and-weight-beyond-the-basics",
       "orders":[
-          { "order":"Send blood presssure education"}
+        { "order":"<a href=\"https://www.uptodate.com/contents/high-blood-pressure-diet-and-weight-beyond-the-basics\" target=\"_blank\">Send blood pressure education</a>"}
         ]
       });
   } else if (model?.toLowerCase().includes("wrist-exercise")) {
@@ -15,14 +15,14 @@ function sendEduLinks(functionArgs) {
     return JSON.stringify({
       "cpt":"https://myhealth.alberta.ca/Health/aftercareinformation/pages/conditions.aspx?hwid=bo1652",
       "orders":[
-          { "order":"Send wrist exercises"}
+        { "order":"<a href=\"https://myhealth.alberta.ca/Health/aftercareinformation/pages/conditions.aspx?hwid=bo1652\" target=\"_blank\">Send wrist exercises</a>"}
         ]
       });
   } else if (model?.toLowerCase().includes("hand-exercise")){
     return JSON.stringify({
       "cpt":"https://www.nationwidechildrens.org/family-resources-education/health-wellness-and-safety-resources/helping-hands/exercises-hand-active",
       "orders":[
-          { "order":"Send hand exercises"}
+          { "order":"<a href=\"https://www.nationwidechildrens.org/family-resources-education/health-wellness-and-safety-resources/helping-hands/exercises-hand-active\" target=\"_blank\">Send hand exercises</a>"}
         ]
       });
   }

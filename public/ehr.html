@@ -47,36 +47,65 @@
 </table>
 
 <script>
-    // Replace with your Airtable API key, base ID, and table name
-    const apiKey = 'patltqmm6Ny8VNpPf.9308e611554421c9ae2639eaa0c728cdb778e241f90a66d33989a33a405ddb7a';
-    const baseId = 'appa4LLsfTmDxoWrg';
-    const tableName = 'Patient_EHR';
+    let apiKey="";
+    let baseId="";
+    let tableName="";
 
-    // Airtable API endpoint
-    const apiUrl = `https://api.airtable.com/v0/${baseId}/${tableName}`;
+     async function airtableConfigJSON(){
+    
+        console.log("script: " + apiKey);
+        try {
+            const airtableConfig =  await fetch('/access_airtable');
+            const airtableConfigJSON =  await airtableConfig.json();
+            apiKey = airtableConfigJSON.apiKey;
+            baseId = airtableConfigJSON.baseId;
+            tableName = airtableConfigJSON.tableName;
+            
+            console.log("airtableConfig.apiKey: " + airtableConfigJSON.apiKey);
+            console.log("airtableConfig.apiKey: " + airtableConfigJSON.baseId);
+            console.log("airtableConfig.apiKey: " + airtableConfigJSON.tableName);
 
-    // Fetch data from Airtable
-    fetch(apiUrl, {
-        headers: {
-            'Authorization': `Bearer ${apiKey}`
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Display data in the table
-        const tableBody = document.querySelector('#dataTable tbody');
-        data.records.forEach(record => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${record.fields.phone_number}</td>
-                <td>${record.fields.appointment_summary}</td>
-                <td>${record.fields.lab_orders}</td>
-                <!-- Add more columns as needed -->
-            `;
-            tableBody.appendChild(row);
-        });
-    })
-    .catch(error => console.error('Error fetching data from Airtable:', error));
+            console.log("apiUrl....: ");
+            // Airtable API endpoint
+            const apiUrl = `https://api.airtable.com/v0/${baseId}/${tableName}`;
+            console.log("apiUrl: " + apiUrl);
+            
+
+            // Fetch data from Airtable
+            fetch(apiUrl, {
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display data in the table
+                const tableBody = document.querySelector('#dataTable tbody');
+                data.records.forEach(record => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${record.fields.phone_number}</td>
+                        <td>${record.fields.appointment_summary}</td>
+                        <td>${record.fields.lab_orders}</td>
+                        <!-- Add more columns as needed -->
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error fetching data from Airtable:', error));
+
+
+            } catch (error) {
+                console.log("error..");
+                console.error(error);
+            }
+      }
+      
+     airtableConfigJSON();
+
+    
+
+    
 </script>
 
 </body>

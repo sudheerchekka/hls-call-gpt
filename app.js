@@ -55,6 +55,23 @@ app.get("/access", (req, res) => {
   return res.send(JSON.stringify(response));
 });
 
+app.get("/access_airtable", (req, res) => {
+  console.log("in access_airtable");
+  
+
+  const apiKey = process.env.AIRTABLE_API_KEY;
+  const baseId = process.env.AIRTABLE_BASE_ID;
+  const tableName = process.env.AIRTABLE_TABLE_NAME;
+
+  const response = {
+    "apiKey": process.env.AIRTABLE_API_KEY,
+    "baseId": process.env.AIRTABLE_BASE_ID,
+    "tableName":  process.env.AIRTABLE_TABLE_NAME
+  };
+
+  return res.send(JSON.stringify(response));
+});
+
 app.get("/profile", (req, res) => {
   console.log("fetching segment profile");
   const segmentService = new SegmentService();

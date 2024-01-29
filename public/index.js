@@ -169,6 +169,21 @@ window.addEventListener('load', async () => {
       }
       fetchProfileTraits();
 
+      async function fetchRecommendedScreenings(){
+        try {
+          const recommnededScreenings = await fetch('/generate_reco_screenings').then((res) =>
+            res.json()
+          );
+          console.log("recommnededScreenings: " + recommnededScreenings.screenings);
+          
+          document.getElementById('screenings_label').innerHTML = recommnededScreenings.screenings;
+          
+        } catch (error) {
+            console.error(error);
+        }
+      }
+      fetchRecommendedScreenings();
+
       // Orderlab results
       async function createLabOrder(item){
         try {

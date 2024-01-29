@@ -145,6 +145,49 @@ class GptService extends EventEmitter {
     }
   }
 
+  async getRecommendedScreenings(patientData, numScreenings) {
+
+    console.log("recommendedScreenings: " + patientData);
+    let patientJSON = JSON.parse(patientData);
+    let age = patientJSON.age;
+    let gender = patientJSON.gender || 'female' ;
+    let medHist = patientJSON.medical_history || 'high blood pressure';
+    
+    let text = "what are " + numScreenings + " recommended screenings that a primary physician would recommend to a " + age + " year old " + gender + " with " + medHist + " during an annual check up. just give me a list without saying anything else";
+    console.log("text: " + text);
+    let partialResponse = ""
+    let finishReason = ""
+    this.userContext = [
+      { "role": "system", "content": text }
+     ]
+
+    //Send transcription to Chat GPT
+    const stream = await this.openai.chat.completions.create({
+      model: "gpt-4",
+      messages: this.userContext,
+      stream: true,
+    });
+
+    for await (const chunk of stream) {
+      let content = chunk.choices[0]?.delta?.content || ""      
+      finishReason = chunk.choices[0].finish_reason;
+      partialResponse += content;
+
+      // Emit last partial response and add complete response to userContext
+      if (content.trim().slice(-1) === "•" || finishReason === "stop") {
+        let response = JSON.stringify(partialResponse);
+        console.log("recommended screenings: " + response);
+
+        response = response.replace(/\\n/g, '<br>');
+        response = response.replace(/\"/g, '');
+
+        console.log("html formatted recommended screenings: " + response);
+
+        return response;
+      }
+    }
+  }
+
 
 }
 

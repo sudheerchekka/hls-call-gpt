@@ -39,11 +39,13 @@ airtableService.updateSummary("+14083985848", "test summary of the conversation"
 
 
 //Test Summary generation
-//const gptService = new GptService();
+const gptService = new GptService();
 //console.log("sample convo: " + process.env.SAMPLE_CONVO);
-//gptService.setSummaryContext();
 //summary = gptService.getSummary(process.env.SAMPLE_CONVO);
 //console.log("sample summary: " + summary);
+
+patientData = JSON.stringify({age:"40", gender: "female", medical_history: "lukemia"});
+gptService.getRecommendedScreenings(patientData, 5);
 
 //Test task generation
 /*
@@ -68,14 +70,14 @@ segmentService.getSegmentData(userId,"traits",limit).then(profile => {
       console.log('Customer Profile:', profile);
     }
   });
+ */
  
- 
- segmentService.getSegmentData(userId,"events","4").then(profileEvent => {
+/* segmentService.getSegmentData(userId,"events","4").then(profileEvent => {
     if (profileEvent) {
       console.log('Customer Profile events:', profileEvent);
     }
-  });
-  */
+  });*/
+  
   
 
   //Test sync-service
@@ -83,6 +85,6 @@ segmentService.getSegmentData(userId,"traits",limit).then(profile => {
   const syncService = new SyncService();
   //syncService.addListItemToList(process.env.TWILI_SYNC_LIST_CONVERSATION_SID,jsonObj);
   //syncService.addListItemToList(process.env.TWILIO_SYNC_LIST_RECO_SID,jsonObj);
-  syncService.clearSyncListItems(process.env.TWILI_SYNC_LIST_CONVERSATION_SID);
-  syncService.clearSyncListItems(process.env.TWILIO_SYNC_LIST_RECO_SID);
+  //syncService.clearSyncListItems(process.env.TWILI_SYNC_LIST_CONVERSATION_SID);
+  //syncService.clearSyncListItems(process.env.TWILIO_SYNC_LIST_RECO_SID);
   //syncService.tokenGenerator("example");

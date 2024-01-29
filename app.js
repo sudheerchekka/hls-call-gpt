@@ -65,6 +65,35 @@ app.get("/profile", (req, res) => {
   });
 });
 
+app.get("/generate_reco_screenings", async (req, res) => {
+  console.log("generating recommeded screenings");
+  let age;
+  let gender;
+  let medical_history = 'high blood pressure'; //defaut value
+  
+  //get patient profile data
+  const segmentService = new SegmentService();
+  const profile = await segmentService.getSegmentData(segmentService.getUserId(),"traits", 100)
+  .then(data => {
+    console.log("profile traits - " + data.traits);
+    console.log("profile traits.condition - " + data.traits.condition);
+    age = data.traits.age;
+    medical_history = data.traits.condition;
+    gender = data.traits.gender_at_birth;
+  });
+  
+  //TODO: Segment is returning None
+  medical_history = 'high blood pressure'; 
+
+  patientData = JSON.stringify({age: age, gender:gender, medical_history: medical_history});
+  const gptService = new GptService();
+  screenings = await gptService.getRecommendedScreenings(patientData, 5);
+  console.log("screenings: " + screenings);
+  screeningsJSON = {screenings: screenings}
+  return res.send(JSON.stringify(screeningsJSON));
+
+});
+
 //pass orders in JSON format {"phonenumber": "+14083985848", "order": "order cbc"} to save them in Airtable
 app.post("/savelaborder", (req, res) => {
   const airtableService = new AirtableService();

@@ -67,11 +67,18 @@
     padding: 10px;
 }
 
-#tasks-list  li {
+#tasks-list  > li {
     background: darkgrey;
     padding: 10px;
     margin: 10px;
+    height: 65px;
+    width: 35rem;
 }
+
+#tasks-list  > li > button {
+  float: right;
+}
+
 
 /* Recommendations */
 

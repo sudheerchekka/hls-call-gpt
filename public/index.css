@@ -1,21 +1,44 @@
 /* bootstrap-icons@1.11.3*/
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 
-ul.no-bullets {
-  list-style-type: none;
-  margin: 0;
-  padding: 10px;
+.navbar {
+  background: #f3f3f3;
+}
+
+#jarvis-logo {
+  width: 12rem;
+}
+
+/* main content */
+
+.main {
+  position: relative;
+  top: 121px;
 }
 
 .header-bar {
   background-color: #ddd; /* Gray background color for the header bar */
-  padding: 10px; /* Add padding to the header bar */
+  padding: 10px 30px; /* Add padding to the header bar */
 }
+
 
 /* patient profile */
 
+.profile-heading {
+  padding-left: 3rem!important;
+}
+
+#patient-name {
+  margin-left: 2rem;
+}
+
+.profile-row {
+  padding: 0px 12px 0 12px;
+}
+
 .profile-border {
   height: 40%;
+  width: 95%!important;
 }
 
 .profile-border > h6 {
@@ -50,6 +73,25 @@ ul.no-bullets {
     margin: 10px;
 }
 
+/* Recommendations */
+
+ul.no-bullets {
+  list-style-type: none;
+  margin: 0;
+  padding: 10px;
+}
+
+/* Action Items */
+
+#tasks-list > li {
+  background: #212529;
+  color: #fff;
+  border-bottom: solid 5px #0FCAF0;
+}
+
+#tasks-list > li > a {
+  color: #fff;
+}
 
 /* transcript */
 .transcript {

@@ -89,12 +89,20 @@ ul.no-bullets {
   padding: 10px;
 }
 
+#screenings_label {
+  padding-left: 2rem;
+}
+
 /* Action Items */
 
 #tasks-list > li {
   background: #212529;
   color: #fff;
   border-bottom: solid 5px #0FCAF0;
+}
+
+#tasks-list > li > .btn {
+  margin: 0px 5px;
 }
 
 #tasks-list > li > a {

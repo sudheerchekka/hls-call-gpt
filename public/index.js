@@ -69,6 +69,7 @@ window.addEventListener('load', async () => {
 
         // Create the button element dynamically
         var dynamicButton = document.createElement('button');
+        dynamicButton.className = "btn btn-info";
         dynamicButton.textContent = 'Proceed';
         
         // Attach a click event listener to the button
@@ -82,6 +83,7 @@ window.addEventListener('load', async () => {
 
         // Create the button element dynamically
         var dynamicButtonClear = document.createElement('button');
+        dynamicButtonClear.className = "btn btn-secondary";
         dynamicButtonClear.textContent = 'clear';
         
         // Attach a click event listener to the button
@@ -139,7 +141,9 @@ window.addEventListener('load', async () => {
       function insertDataIntoTable(jsonData) {
         // Select the table using its class
         var table = document.querySelector('.profile-table tbody');
-  
+        var profileName = document.getElementById("patient-name");
+        profileName.innerHTML = jsonData["first_name"] + " " + jsonData["last_name"];
+
         // Iterate over the JSON object and insert a row for each key-value pair
         for (var key in jsonData) {
           if (jsonData.hasOwnProperty(key)) {

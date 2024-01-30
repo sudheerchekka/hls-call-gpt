@@ -115,10 +115,20 @@ app.get("/generate_reco_screenings", async (req, res) => {
 //pass orders in JSON format {"phonenumber": "+14083985848", "order": "order cbc"} to save them in Airtable
 app.post("/savelaborder", (req, res) => {
   const airtableService = new AirtableService();
-  console.log("req.body.cpt: " + req.body.cpt);
-  console.log("req.body.order: " + req.body.order);
-  if (req.body.phonenumber && req.body.order)
+  const segmentService = new SegmentService();
+
+  if (req.body.phonenumber && req.body.order) {
     airtableService.updateLabOrders(req.body.phonenumber, req.body.order);
+    let segmentEvent = {
+      'userId': segmentService.getEventUserId(),
+      'event': req.body.order,
+       'properties': {
+          'lab': 'Quest'
+        }
+     }
+     console.log(segmentEvent);
+     segmentService.updateSegmentEvents(process.env.SEGMENT_EVENT_API_URL, segmentEvent);
+  }
 
   if (req.body.cpt === 'sms'){
     const smsService = new SMSService();

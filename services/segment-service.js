@@ -7,8 +7,10 @@ class SegmentService{
 
   constructor(){
     this.userId = 'use_fDzNFMwApuS92WpVNvZ2bK5aWA4'; // Example user ID
+    this.eventUserid = "tvitola>";
     this.varString ="traits";
     this.limit = "100";
+    this.writekey = "riv61GzzhSMHDqEFj1Ocd8ioPuAzf6Y5";
   }
 
   async getSegmentData(userId,varString,limit) {
@@ -31,16 +33,26 @@ class SegmentService{
   getUserId(){
     return this.userId;
   }
+
+
+  getEventUserId(){
+    return this.eventUserid;
+  }
+
   async updateSegmentEvents(segmentApiUrl, eventObject){
     try {
-      const response = await axios.post(`${segmentApiUrl}`, eventObject, {
+      
+      const response = await axios.post(
+        segmentApiUrl, 
+        eventObject, 
+        {
           headers: {
               'Content-Type': 'application/json',
               Authorization:
-                `Basic ${btoa(writekey + ':')}`,
-            }
-    ,
+                `Basic ${btoa(this.writekey + ':')}`,
+          }
       });
+      
       return response.data;
     } catch (error) {
       console.error('Error updating customer profile events:', error);

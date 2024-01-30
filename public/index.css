@@ -19,6 +19,7 @@
 .header-bar {
   background-color: #ddd; /* Gray background color for the header bar */
   padding: 10px 30px; /* Add padding to the header bar */
+  border-bottom: solid 5px darkgray;
 }
 
 

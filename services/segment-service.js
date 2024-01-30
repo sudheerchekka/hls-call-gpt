@@ -31,6 +31,22 @@ class SegmentService{
   getUserId(){
     return this.userId;
   }
+  async updateSegmentEvents(segmentApiUrl, eventObject){
+    try {
+      const response = await axios.post(`${segmentApiUrl}`, eventObject, {
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization:
+                `Basic ${btoa(writekey + ':')}`,
+            }
+    ,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error updating customer profile events:', error);
+      return null;
+    }
+  };
   //
   /*
     getSegmentData(userId,"traits",limit).then(profile => {

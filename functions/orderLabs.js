@@ -18,11 +18,11 @@ function orderLabs(functionArgs) {
           { "order":"Order Vit D level"}
         ]
       });
-  } else {
+  } else if (model?.toLowerCase().includes("lipid_profile")) {
     return JSON.stringify({
-      "cpt":"12590",
+      "cpt":"12591",
       "orders":[
-          { "order":"Order metabolic panel"}
+          { "order":"Order lipid profile"}
         ]
       });
   }

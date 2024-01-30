@@ -10,8 +10,8 @@ const tools = [
         properties: {
           model: {
             type: "string",
-            "enum": ["complete_count", "VitD", "panel"],
-            description: "lab order for blood report or Vit D or panel",
+            "enum": ["complete_count", "VitD", "lipid_profile"],
+            description: "lab order for blood report or Vit D or lipid profile",
           },
         },
         required: ["model"],

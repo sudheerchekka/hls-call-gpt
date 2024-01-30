@@ -70,7 +70,8 @@ class SyncService {
         for(var ordervar in jsonObj.orders){
           //console.log(" order.order : " + jsonObj.orders[ordervar].order);
           newOrder.id = patientPhoneNumber;
-          newOrder.order = jsonObj.orders[ordervar].order
+          newOrder.order = jsonObj.orders[ordervar].order;
+          newOrder.cpt = jsonObj.cpt;
           console.log("adding new order to Sync: " + JSON.stringify(newOrder));
 
         const syncList = await this.client.sync.v1.services(this.syncServiceSid)

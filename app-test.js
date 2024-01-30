@@ -11,6 +11,7 @@ const { TextToSpeechService } = require("./services/tts-service");
 const { AirtableService } = require("./services/airtable-service");
 const { SegmentService } = require("./services/segment-service");
 const { SyncService } = require("./services/sync-service");
+const { SMSService } = require("./services/sms-service");
 
 const app = express();
 ExpressWs(app);
@@ -85,6 +86,10 @@ segmentService.getSegmentData(userId,"traits",limit).then(profile => {
   const syncService = new SyncService();
   //syncService.addListItemToList(process.env.TWILI_SYNC_LIST_CONVERSATION_SID,jsonObj);
   //syncService.addListItemToList(process.env.TWILIO_SYNC_LIST_RECO_SID,jsonObj);
-  syncService.clearSyncListItems(process.env.TWILI_SYNC_LIST_CONVERSATION_SID);
-  syncService.clearSyncListItems(process.env.TWILIO_SYNC_LIST_RECO_SID);
+  //syncService.clearSyncListItems(process.env.TWILI_SYNC_LIST_CONVERSATION_SID);
+  //syncService.clearSyncListItems(process.env.TWILIO_SYNC_LIST_RECO_SID);
   //syncService.tokenGenerator("example");
+
+
+  const smsService = new SMSService();
+  smsService.sendSMS("+14083985848", "testing");

@@ -194,7 +194,8 @@ window.addEventListener('load', async () => {
           console.log("task button clicked")
           const dataJson = {
             phonenumber: item.data.id,
-            order: item.data.order
+            order: item.data.order,
+            cpt: item.data.cpt,
           };
           console.log(dataJson);
           

@@ -100,6 +100,10 @@ ul.no-bullets {
     overflow: hidden;
   }
 
+  .transcriptSummary {
+    padding-left: 2rem;
+  }
+
   .message {
     display: flex;
     flex-direction: column;
@@ -130,4 +134,8 @@ ul.no-bullets {
     font-size: 7pt;
     font-weight: bold;
     color: #000000;
+  }
+
+  #saveSummaryButton {
+    margin: 10px 0px;
   }
